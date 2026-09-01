@@ -1,0 +1,191 @@
+================================================================================
+                       PRODUCT REQUIREMENT DOCUMENT (PRD)
+                             FUNDBRIDGE PLATFORM
+================================================================================
+Document Version: 2.3.0 (Streamlined Overview & Sidebar Navigation Architecture)
+Date: July 2026
+Status: Production Ready / Streamlined Investor Dashboard Implemented
+Target Region: Bangladesh (Higher Education & Startup Ecosystem)
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & EXECUTIVE OVERVIEW
+--------------------------------------------------------------------------------
+FundBridge is a trust-focused, milestone-driven crowdfunding and angel investment 
+marketplace tailored for Bangladeshi university student entrepreneurs, young graduates, 
+and corporate alumni angel investors.
+
+The platform bridges the trust and funding gap in early-stage student startups by:
+1. Verifying student identities (University ID, NID) and alumni backer credentials.
+2. Structuring fundraising around milestone-based escrow tranches.
+3. Enabling flexible return structures (Revenue Share, Equity, Convertible Notes, Debt).
+4. Providing real-time direct chat (<300ms latency) and AI-powered pitch optimization.
+5. Equipping investors with watchlist bookmarking and head-to-head 3-startup comparative matrices.
+6. Supplying full auditability with cryptographic transaction hash receipts and automated notifications.
+
+--------------------------------------------------------------------------------
+2. TARGET AUDIENCE & USER ROLES
+--------------------------------------------------------------------------------
+2.1 Student Founders (Business Owners)
+  - University students & recent graduates with validated startup ideas or MVPs.
+  - Seeking seed capital (BDT ৳50,000 - ৳5,000,000) from verified alumni.
+  - Use AI copy generation to draft pitch bios, slogans, and progress announcements.
+  - Require structured payout releases via local MFS (bKash, Nagad) or bank channels.
+
+2.2 Alumni Backers & Investors
+  - Corporate alumni, angel investors, and venture funds seeking early-stage deal flow.
+  - Evaluate ventures using side-by-side comparison matrices, watchlist pins, and direct chats.
+
+2.3 Super Administrators
+  - Platform operators responsible for identity vetting, campaign moderation,
+    escrow oversight, financial payout audits, and dispute resolution.
+
+--------------------------------------------------------------------------------
+3. CURRENT SYSTEM ARCHITECTURE & TECH STACK
+--------------------------------------------------------------------------------
+3.1 Frontend Architecture
+  - Framework: React.js (Vite)
+  - Styling: Custom CSS & Design System (Horizon Sky-Blue & Lush Pine Green theme)
+  - Animation & UI Components: GSAP (GreenSock), Lucide React Icon Library
+  - Responsiveness: Fully mobile, tablet, and desktop responsive layout
+
+3.2 Backend Architecture
+  - Environment: Node.js & Express.js Serverless REST API
+  - Serverless Function Entrypoint: `api/server.js` for Vercel Cloud Serverless functions
+  - AI Assistant Service: `/api/ai/generate` engine for tagline, bio, & investor matching
+  - Database Engine: 100% Supabase Cloud PostgreSQL Database (`backend/supabase_schema.sql` native schema)
+
+--------------------------------------------------------------------------------
+4. COMPLETE FUNCTIONAL REQUIREMENT SPECIFICATIONS (FR-1 TO FR-24)
+--------------------------------------------------------------------------------
+
+[FR-1] SECURE REGISTRATION & ROLE ASSIGNMENT
+- Onboarding for "Business Owner" (Founder) and "Investor" with custom input fields.
+
+[FR-2] ROLE ACCESS ENFORCEMENT
+- Admin routing pathways and security monitors restricted strictly to admin profiles.
+
+[FR-3] PROFILE MANAGEMENT
+- Business owners and investors can update profile details, university, bio, and company history.
+
+[FR-4] VETTING VERIFICATION
+- Document upload handlers for Student ID Cards, NIDs, Passports, and credential links.
+
+[FR-5] CAMPAIGN MANAGEMENT (CREATE, EDIT, CANCEL)
+- Founders can create pitches, edit targets/milestones (`PUT /api/campaigns/:id`), and cancel/de-list campaigns (`DELETE /api/campaigns/:id`).
+
+[FR-6] INVESTMENT PROPOSAL TRACKING
+- Founders review incoming investor term sheet proposals and trigger Accept or Reject decisions.
+
+[FR-7] DIRECT CHAT API BACKBONE
+- REST endpoints (`/api/chat/messages`) supporting messaging between founders and investors.
+
+[FR-8] PROGRESS LOGGING & ANNOUNCEMENTS
+- Founders publish milestone progress updates (`POST /api/campaigns/:id/updates`) rendered in a public timeline feed.
+
+[FR-9] TRANSACTION TRACKING
+- Founder wallet analytics dashboard with milestone escrow balances, payout logs, and hash receipts.
+
+[FR-10] MARKETPLACE DISCOVERY
+- Approved fundraising campaign catalog with live progress bars and verified badges.
+
+[FR-11] GRANULAR SEARCH ENGINE
+- Business directory filtering by Category, Target Goal, Stage, and University/Location.
+
+[FR-12] DETAILED PROFILE AUDITING
+- Detailed pitch view with video player, milestone breakdown, equity model, and escrow status.
+
+[FR-13] INVESTMENT PROPOSAL SUBMISSION & WITHDRAWAL
+- Custom Term Sheet Generator supporting Revenue Share %, Equity %, Convertible Note, and Debt. Support proposal withdrawal (`POST /api/proposals/:id/withdraw`).
+
+[FR-14] PERSONAL HISTORY & PORTFOLIO TRACKING
+- Investor portfolio log displaying backed startups, capital committed, operational level (Prototype, Pilot, Scale), and upcoming funding tranches.
+
+[FR-15] INVESTOR WATCHLIST PINS & BOOKMARKED FOUNDERS
+- Pin/Bookmark startups for quick tracking (`POST /api/watchlist/toggle`) and bookmark student founders (`POST /api/investors/bookmark-founder`).
+
+[FR-16] 3-STARTUP COMPARATIVE ASSESSMENT MATRIX TOOL
+- Select up to 3 startups for a head-to-head comparison table analyzing Goals, Equity, Category, Stage, and Milestones side-by-side.
+
+[FR-17] VETTING MODERATION QUEUE
+- Admin panel to inspect identity documents (Student ID, NID, Passports) and Approve/Reject user accounts.
+
+[FR-18] CAMPAIGN AUDITING QUEUE
+- Admin moderation desk to approve or reject submitted startup pitches before public directory listing.
+
+[FR-19] USER OPERATIONS & TRANSACTION MANAGEMENT
+- Admin tools to inspect transaction logs, audit hash receipts, and review system activities.
+
+[FR-20] ACCOUNT SUSPENSIONS & ESCROW FREEZE
+- Admin dispute resolution desk to freeze campaign escrow (`/api/admin/campaigns/:id/freeze`) and flag fraudulent accounts.
+
+[FR-21] AI OPTIMIZATION ENGINE
+- AI Assistant endpoint (`POST /api/ai/generate`) helping founders generate pitch bios, slogans, business summaries, and investor match scores.
+
+[FR-22] AUTOMATED IN-APP NOTIFICATIONS
+- In-app notification bell drawer (`GET /api/notifications`) dispatching notices on proposal updates and vetting decisions.
+
+[FR-23] TOP NAVIGATION BAR & GLOBAL SEARCH
+- Investor header containing global search engine across startups/founders/investors, chat inbox drawer, notification counter badge, and profile dropdown (Account Settings, KYC Status, Logout).
+
+[FR-24] OVERVIEW PANEL & 6 INTERACTIVE METRIC CARDS
+- High-level investor overview displaying 6 live, clickable metric cards: (1) Number of My Investments, (2) Rejected Proposals, (3) Submitted Proposals, (4) Co-Investors Connected, (5) Saved Watchlist, and (6) Student Founders Connected. Clicking any metric card opens a dedicated modal with the full detailed list. Includes personalized watchlist and submitted proposals sections. No generic campaign listing on Overview page.
+
+--------------------------------------------------------------------------------
+5. DATABASE SCHEMA SUMMARY (SUPABASE CLOUD POSTGRESQL)
+--------------------------------------------------------------------------------
+1. USERS: id, name, email, password, role, vetting_status, university, student_id, department, nid, dob, student_id_card_image, nid_card_image, affiliation_status, institution, passing_year, bank_or_mfs, credentials_image, vetting_date, created_at.
+2. CAMPAIGNS: id, title, founder_id, university, location, category, stage, goal, raised, equity_offer, tagline, cover_photo, pitch_video_url, description, milestones, status, escrow_frozen, verified, created_at.
+3. PROPOSALS: id, campaign_id, investor_id, amount, return_structure, maturity_period, grace_period, terms, custom_notes, status, created_at.
+4. PAYOUTS: id, founder_id, tranche, amount, method, account_number, status, hash, created_at.
+5. DISPUTES: id, complainant_name, complainant_role, reported_user, issue_type, description, evidence_file, severity, status, created_at.
+6. AUDIT_LOGS: id, hash, category, title, status, latency, created_at.
+7. MESSAGES: id, sender_id, receiver_id, sender_name, campaign_id, text, created_at.
+8. CAMPAIGN_UPDATES: id, campaign_id, founder_id, title, content, milestone_tag, created_at.
+9. WATCHLIST: id, user_id, campaign_id, created_at.
+10. NOTIFICATIONS: id, user_id, title, message, type, is_read, created_at.
+11. INVESTOR_CONNECTIONS: id, requester_id, receiver_id, status, created_at.
+12. BOOKMARKED_FOUNDERS: id, investor_id, founder_id, created_at.
+
+--------------------------------------------------------------------------------
+6. VERCEL DEPLOYMENT & PRODUCTION HOSTING GUIDE (SUPABASE DATABASE)
+--------------------------------------------------------------------------------
+Step 1: Execute Supabase Database Schema
+  1. Log into your Supabase Dashboard (https://supabase.com).
+  2. Create a new project named "FundBridge".
+  3. Open the "SQL Editor" in Supabase.
+  4. Paste the entire contents of `backend/supabase_schema.sql` and click "Run".
+  5. Copy your Project URL and Anon/Service Key from Settings -> API.
+
+Step 2: Deploy to Vercel
+  1. Push your repository to GitHub / GitLab.
+  2. Log into Vercel (https://vercel.com) and click "Add New Project".
+  3. Import your FundBridge repository.
+  4. Configure Project Settings:
+     - Framework Preset: Vite
+     - Build Command: `npm run build`
+     - Output Directory: `frontend/dist`
+  5. Add Environment Variables in Vercel Project Settings:
+     - `SUPABASE_URL` = <Your Supabase Project URL>
+     - `SUPABASE_ANON_KEY` = <Your Supabase Anon / Service Role Key>
+  6. Click "Deploy".
+
+Step 3: Serverless Routing Verification
+  - Serverless API Function: Automatically routed via `api/server.js`.
+  - Frontend SPA Rewrites: Configured via `vercel.json`.
+
+--------------------------------------------------------------------------------
+7. DEMO CREDENTIALS & LOCAL QUICK START
+--------------------------------------------------------------------------------
+Default Test Accounts:
+- Admin Portal:      admin@fundbridge.com    / admin123
+- Investor Portal:   investor@firm.com       / investorpassword
+- Student Founder:   anika@brac.edu.bd       / founderpassword
+
+Execution Commands:
+- Local Serverless & Client: npm start
+- Local Frontend UI: http://localhost:5173
+- Production URL: Provided automatically by Vercel upon deployment.
+
+================================================================================
+                          END OF PRD DOCUMENT
+================================================================================
